@@ -9,6 +9,9 @@ import ArrowRightIcon from '../assets/svg/keyboardArrowRightIcon.svg?react'
 // import visibilityIcon from '../assets/svg/visibilityIcon.svg?react'    // This is not gonna work because it's used in an <img tag as src
 import visibilityIcon from '../assets/svg/visibilityIcon.svg'   // This is the way to import the SVG for the usage as src in an img tag
 
+import { getAuth, createUserWithEmailAndPassword, updateProfile } from 'firebase/auth'
+import { db } from '../firebase.config'
+
 function SignUp() {
   const [showPassword, setShowPassword] = useState(false) // [showPassword, setShowPassword] = [state, functionToSetTheState] - if it's true than the PW will be shown as text otherwise as ****
   const [formData, setFormData] = useState({    // In this case the state is an object
@@ -27,8 +30,26 @@ function SignUp() {
     }))
   }
 
-  const onSubmit = () => {
+  const onSubmit = async (e) => {
+    e.preventDefault()
 
+    try {
+      const auth = getAuth()  // getAuth comes from 'firebase/auth' - to get the auth value
+
+      const userCredential = await createUserWithEmailAndPassword(  // createUserWithEmailAndPassword comes from 'firebase/auth' - to register the user
+        auth,
+        email,
+        password
+      )
+
+      const user = userCredential.user  // To get the user info for the db
+
+      updateProfile(auth.currentUser, { displayName: name })  // updateProfile comes from 'firebase/auth' - to update the display name
+
+      navigate('/')   // navigate comes from 'react-router-dom' - to redirect
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   return (
