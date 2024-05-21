@@ -9,8 +9,10 @@ import ArrowRightIcon from '../assets/svg/keyboardArrowRightIcon.svg?react'
 // import visibilityIcon from '../assets/svg/visibilityIcon.svg?react'    // This is not gonna work because it's used in an <img tag as src
 import visibilityIcon from '../assets/svg/visibilityIcon.svg'   // This is the way to import the SVG for the usage as src in an img tag
 
-import { getAuth, createUserWithEmailAndPassword, updateProfile } from 'firebase/auth'
+import { getAuth, createUserWithEmailAndPassword, updateProfile } from 'firebase/auth'  // To be able to register users
 import { db } from '../firebase.config'
+
+import { setDoc, doc, serverTimestamp } from 'firebase/firestore' // To be able to save users To Firerstore
 
 function SignUp() {
   const [showPassword, setShowPassword] = useState(false) // [showPassword, setShowPassword] = [state, functionToSetTheState] - if it's true than the PW will be shown as text otherwise as ****
@@ -45,6 +47,12 @@ function SignUp() {
       const user = userCredential.user  // To get the user info for the db
 
       updateProfile(auth.currentUser, { displayName: name })  // updateProfile comes from 'firebase/auth' - to update the display name
+
+      const formDataCopy = { ...formData }  // To copy the form data (name, email, password) - to not have to change formData
+      delete formDataCopy.password  // To delete the PW from the copy - to don't submit it to the db
+      formDataCopy.timestamp = serverTimestamp()  // To set a timestamp to the copy
+
+      await setDoc(doc(db, 'users', user.uid), formDataCopy)  // setDoc to update the db - 'users' is the collection - user.uid is the user to be updated
 
       navigate('/')   // navigate comes from 'react-router-dom' - to redirect
     } catch (error) {
