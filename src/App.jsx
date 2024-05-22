@@ -6,6 +6,8 @@ import SignIn from './pages/SignIn'
 import SignUp from './pages/SignUp'
 import ForgotPassword from './pages/ForgotPassword'
 import Navbar from './components/Navbar'
+import { ToastContainer } from 'react-toastify';  // To be able to use toastify in the project
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
 
@@ -22,6 +24,8 @@ function App() {
         </Routes>
         <Navbar />
       </Router>
+
+      <ToastContainer />  {/* To be able to use toastify in the project */}
     </>
   )
 }

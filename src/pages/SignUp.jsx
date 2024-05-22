@@ -14,6 +14,8 @@ import { db } from '../firebase.config'
 
 import { setDoc, doc, serverTimestamp } from 'firebase/firestore' // To be able to save users To Firerstore
 
+import { toast } from 'react-toastify'  // To be able to use Alerts With React Toastify
+
 function SignUp() {
   const [showPassword, setShowPassword] = useState(false) // [showPassword, setShowPassword] = [state, functionToSetTheState] - if it's true than the PW will be shown as text otherwise as ****
   const [formData, setFormData] = useState({    // In this case the state is an object
@@ -56,7 +58,7 @@ function SignUp() {
 
       navigate('/')   // navigate comes from 'react-router-dom' - to redirect
     } catch (error) {
-      console.log(error);
+      toast.error('Something went wrong with registration')
     }
   }
 

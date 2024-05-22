@@ -11,6 +11,8 @@ import visibilityIcon from '../assets/svg/visibilityIcon.svg'   // This is the w
 
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth'
 
+import { toast } from 'react-toastify'  // To be able to use Alerts With React Toastify
+
 function SignIn() {
   const [showPassword, setShowPassword] = useState(false) // [showPassword, setShowPassword] = [state, functionToSetTheState] - if it's true than the PW will be shown as text otherwise as ****
   const [formData, setFormData] = useState({    // In this case the state is an object
@@ -40,7 +42,7 @@ function SignIn() {
         navigate('/')
       }
     } catch (error) {
-      console.log(error);
+      toast.error('Bad User Credentials')
     }
   }
 
