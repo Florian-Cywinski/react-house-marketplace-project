@@ -9,6 +9,8 @@ import ArrowRightIcon from '../assets/svg/keyboardArrowRightIcon.svg?react'
 // import visibilityIcon from '../assets/svg/visibilityIcon.svg?react'    // This is not gonna work because it's used in an <img tag as src
 import visibilityIcon from '../assets/svg/visibilityIcon.svg'   // This is the way to import the SVG for the usage as src in an img tag
 
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth'
+
 function SignIn() {
   const [showPassword, setShowPassword] = useState(false) // [showPassword, setShowPassword] = [state, functionToSetTheState] - if it's true than the PW will be shown as text otherwise as ****
   const [formData, setFormData] = useState({    // In this case the state is an object
@@ -26,8 +28,20 @@ function SignIn() {
     }))
   }
 
-  const onSubmit = () => {
+  const onSubmit = async (e) => {
+    e.preventDefault()
 
+    try {
+      const auth = getAuth()  // To initialize auth
+
+      const userCredential = await signInWithEmailAndPassword(auth, email, password)
+
+      if (userCredential.user) {
+        navigate('/')
+      }
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   return (
