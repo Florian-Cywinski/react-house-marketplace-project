@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-
 // The old way to import SVG's with CRA (create react app)
 // import { ReactComponent as ArrowRightIcon } from '../assets/svg/keyboardArrowRightIcon.svg'
 // import visibilityIcon from '../assets/svg/visibilityIcon.svg'    // The other way to bring it in is because of it's just a source for an img tag
@@ -8,10 +7,9 @@ import { Link, useNavigate } from 'react-router-dom'
 import ArrowRightIcon from '../assets/svg/keyboardArrowRightIcon.svg?react'
 // import visibilityIcon from '../assets/svg/visibilityIcon.svg?react'    // This is not gonna work because it's used in an <img tag as src
 import visibilityIcon from '../assets/svg/visibilityIcon.svg'   // This is the way to import the SVG for the usage as src in an img tag
-
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth'
-
 import { toast } from 'react-toastify'  // To be able to use Alerts With React Toastify
+import OAuth from '../components/OAuth'
 
 function SignIn() {
   const [showPassword, setShowPassword] = useState(false) // [showPassword, setShowPassword] = [state, functionToSetTheState] - if it's true than the PW will be shown as text otherwise as ****
@@ -75,7 +73,7 @@ function SignIn() {
           </div>
         </form>
 
-        {/* <OAuth />   Google OAuth */}
+        <OAuth />
 
         <Link to='/sign-up' className='registerLink'>Sign Up Instead</Link>
       </div>
