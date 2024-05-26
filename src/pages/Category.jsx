@@ -12,6 +12,7 @@ import {
 import { db } from '../firebase.config'
 import { toast } from 'react-toastify'
 import Spinner from '../components/Spinner'
+import ListingItem from '../components/ListingItem'
 
 function Category() {
   const [listings, setListings] = useState(null)  // It's later an array where all listed properties go in (filtered by either rent or sale)
@@ -69,7 +70,11 @@ function Category() {
           <main>
             <ul className='categoryListings'>
               {listings.map((listing) => (
-                <h3 key={listing.id}>{listing.data.name}</h3>
+                <ListingItem
+                  listing={listing.data}
+                  id={listing.id}     // isting.id is the document id in Firestore
+                  key={listing.id}    // isting.id is the document id in Firestore
+                />
               ))}
             </ul>
           </main>
