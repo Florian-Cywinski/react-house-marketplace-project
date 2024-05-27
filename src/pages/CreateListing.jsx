@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react' // Fix memory leak warning -
 import { getAuth, onAuthStateChanged } from 'firebase/auth' // onAuthStateChanged: This hook / function will fire of every time the logged in state changes (from logged in to logged out and vice versa)
 import { useNavigate } from 'react-router-dom'
 import Spinner from '../components/Spinner'
+import { toast } from 'react-toastify'
 
 function CreateListing() {
   // eslint-disable-next-line
@@ -60,9 +61,61 @@ function CreateListing() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isMounted])
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault()
-    console.log(formData);
+
+    setLoading(true)
+
+    // To inform the person who created the listing that the discounted price must be lower than the regular price, if this was entered incorrectly
+    if (discountedPrice >= regularPrice) {
+      setLoading(false)
+      toast.error('Discounted price needs to be less than regular price')
+      return
+    }
+
+    // To inform the creator of a listing that a maximum of 6 images can be uploaded if this was done incorrectly
+    if (images.length > 6) {
+      setLoading(false)
+      toast.error('Max 6 images')
+      return
+    }
+
+    let geolocation = {}  // The object that holds the lat and lon - see geolocation field in firestore
+    let location          // To initialize location - see location field (the whole address) in firestore
+
+    if (geolocationEnabled) { // if geolocationEnabled was set to true (usage with Geocoding API from Google)
+      const response = await fetch(   // Make a request to Geocoding API from Google
+        // `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${process.env.REACT_APP_GEOCODE_API_KEY}`
+        // `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=AIzaSy...4ysLII`
+        `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${import.meta.env.VITE_APP_GEOCODE_API_KEY}`
+      )
+
+      const data = await response.json()
+
+      // console.log(data);    // REQUEST_DENIED since the API key isn't valid
+
+      // The response (data) gives lat and lon to the typed in (form) address
+      geolocation.lat = data.results[0]?.geometry.location.lat ?? 0 // geolocation.lat is data.results[0]?.geometry.location.lat if it is not null (??) then it would be 0
+      geolocation.lng = data.results[0]?.geometry.location.lng ?? 0 // The first ? is needed to don't get an error message
+
+      // For the case a not valid address was typed in like jfjfjgja that can not resolved as address by the API -  response (data) has data.status === 'ZERO_RESULTS'
+      location = data.status === 'ZERO_RESULTS' ? undefined : data.results[0]?.formatted_address  // is either undefined or the formated (by API) address
+      // If the address typed in isn't a valid address
+      if (location === undefined || location.includes('undefined')) {
+        setLoading(false)
+        toast.error('Please enter a correct address')
+        return
+      }
+    } else {  // if geolocationEnabled was set to false (usage without Geocoding API from Google)
+      geolocation.lat = latitude  // geolocation.lat -> lat is one key of the geolocation object initialized above -> latidude is the value (it comes from the form)
+      geolocation.lng = longitude
+      location = address          // location is the variable created above - address comes from the form
+      // console.log(geolocation, location);
+    }
+
+    setLoading(false)
+
+ 
   }
 
   const onMutate = (e) => {

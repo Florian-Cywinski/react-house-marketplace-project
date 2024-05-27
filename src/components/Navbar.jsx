@@ -6,14 +6,14 @@ import { useNavigate, useLocation } from 'react-router-dom'
 // import { ReactComponent as PersonOutlineIcon } from '../assets/svg/personOutlineIcon.svg'
 
 // The new way to import SVG's with npm i vite-plugin-svgr and adapting the vite.config.js file
-import OfferIcon from '../assets/svg/localOfferIcon.svg?react'
-import ExploreIcon from '../assets/svg/exploreIcon.svg?react'
-import PersonOutlineIcon from '../assets/svg/personOutlineIcon.svg?react'
+// import OfferIcon from '../assets/svg/localOfferIcon.svg?react'
+// import ExploreIcon from '../assets/svg/exploreIcon.svg?react'
+// import PersonOutlineIcon from '../assets/svg/personOutlineIcon.svg?react'
 
-// The new way to import SVG's with Vite by having components (see in the components folder e.g OfferIcon.jsx) - use https://svg2jsx.com/ to convert SVG's into jsx components -> but the color of the icon does not change (fill)
-// import OfferIcon from './OfferIcon'
-// import ExploreIcon from './ExploreIcon'
-// import PersonOutlineIcon from './PersonOutlineIcon'
+// The new way to import SVG's with Vite by having components (see in the components folder e.g OfferIcon.jsx) - use https://svg2jsx.com/ to convert SVG's into jsx components -> make sure to pass in ({fill, width, height})
+import OfferIcon from './OfferIcon'
+import ExploreIcon from './ExploreIcon'
+import PersonOutlineIcon from './PersonOutlineIcon'
 
 function Navbar() {
   const navigate = useNavigate()

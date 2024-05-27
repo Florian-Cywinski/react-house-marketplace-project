@@ -1,14 +1,17 @@
 import React from "react";
 
-function PersonOutlineIcon() {
+function PersonOutlineIcon({fill, width, height}) {
 // function PersonOutlineIcon(fill) {
 
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
+      // width="24"
+      // height="24"
+      width={width}
+      height={height}
       viewBox="0 0 24 24"
+      fill={fill} 
     >
       <path fill="none" d="M0 0h24v24H0V0z"></path>
       {/* <path fill={fill} d="M0 0h24v24H0V0z"></path> */}
