@@ -87,19 +87,38 @@ function CreateListing() {
       const response = await fetch(   // Make a request to Geocoding API from Google
         // `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${process.env.REACT_APP_GEOCODE_API_KEY}`
         // `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=AIzaSy...4ysLII`
-        `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${import.meta.env.VITE_APP_GEOCODE_API_KEY}`
+        // `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${import.meta.env.VITE_APP_GEOCODE_API_KEY}`
+        // `https://nominatim.openstreetmap.org/search?q=${address}&format=json&polygon=1&addressdetails=1`
+        // `https://nominatim.openstreetmap.org/search?q=${address}&format=geojson&addressdetails=1`
+        `https://nominatim.openstreetmap.org/search?q=${address}&format=json`
       )
 
       const data = await response.json()
 
-      // console.log(data);    // REQUEST_DENIED since the API key isn't valid
+      // This is just a helper function to calc. the avg of the two responsed lats / lons by using the Nominatim API from OSM since the response is not a single point but a range
+      function average(a, b) {
+    		// force the input as numbers *1
+        return ((a*1 + b*1) /2);
+      }
 
       // The response (data) gives lat and lon to the typed in (form) address
-      geolocation.lat = data.results[0]?.geometry.location.lat ?? 0 // geolocation.lat is data.results[0]?.geometry.location.lat if it is not null (??) then it would be 0
-      geolocation.lng = data.results[0]?.geometry.location.lng ?? 0 // The first ? is needed to don't get an error message
+      // Geocoding API from Google
+      // geolocation.lat = data.results[0]?.geometry.location.lat ?? 0 // geolocation.lat is data.results[0]?.geometry.location.lat if it is not null (??) then it would be 0
+      // geolocation.lng = data.results[0]?.geometry.location.lng ?? 0 // The first ? is needed to don't get an error message
+      // Nominatim API from OSM
+      if (data[0] !== undefined) {  // if there are data available for the typed in address - ggggggg as address would be undefined
+        geolocation.lat = +average(data[0].lat, data[1].lat).toFixed(7)
+        // console.log(geolocation.lat, typeof geolocation.lat);
+        geolocation.lng = +average(data[0].lon, data[1].lon).toFixed(7)
+        // console.log(geolocation.lng, typeof geolocation.lng);        
+      }
 
-      // For the case a not valid address was typed in like jfjfjgja that can not resolved as address by the API -  response (data) has data.status === 'ZERO_RESULTS'
-      location = data.status === 'ZERO_RESULTS' ? undefined : data.results[0]?.formatted_address  // is either undefined or the formated (by API) address
+      // For the case a not valid address was typed in like jfjfjgja that can not resolved as address by the API
+      // Geocoding API from Google -  response (data) has data.status === 'ZERO_RESULTS'
+      // location = data.status === 'ZERO_RESULTS' ? undefined : data.results[0]?.formatted_address  // is either undefined or the formated (by API) address
+      // Nominatim API from OSM
+      location = data[0] === undefined ? undefined : data[0].display_name  // is either undefined or the formated (by API) address
+
       // If the address typed in isn't a valid address
       if (location === undefined || location.includes('undefined')) {
         setLoading(false)
@@ -110,7 +129,7 @@ function CreateListing() {
       geolocation.lat = latitude  // geolocation.lat -> lat is one key of the geolocation object initialized above -> latidude is the value (it comes from the form)
       geolocation.lng = longitude
       location = address          // location is the variable created above - address comes from the form
-      // console.log(geolocation, location);
+    //   // console.log(geolocation, location);
     }
 
     setLoading(false)
