@@ -3,6 +3,9 @@ import { getAuth, onAuthStateChanged } from 'firebase/auth' // onAuthStateChange
 import { useNavigate } from 'react-router-dom'
 import Spinner from '../components/Spinner'
 import { toast } from 'react-toastify'
+import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage'  // https://firebase.google.com/docs/storage/web/upload-files
+import { db } from '../firebase.config'
+import { v4 as uuidv4 } from 'uuid'   // To use this package just call uuidv4 as function to create unique ids
 
 function CreateListing() {
   // eslint-disable-next-line
@@ -84,12 +87,12 @@ function CreateListing() {
     let location          // To initialize location - see location field (the whole address) in firestore
 
     if (geolocationEnabled) { // if geolocationEnabled was set to true (usage with Geocoding API from Google)
-      const response = await fetch(   // Make a request to Geocoding API from Google
+      const response = await fetch(   // Make a request to Geocoding API from Google / Nominatim API from OSM
+        // Geocoding API from Google
         // `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${process.env.REACT_APP_GEOCODE_API_KEY}`
         // `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=AIzaSy...4ysLII`
         // `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${import.meta.env.VITE_APP_GEOCODE_API_KEY}`
-        // `https://nominatim.openstreetmap.org/search?q=${address}&format=json&polygon=1&addressdetails=1`
-        // `https://nominatim.openstreetmap.org/search?q=${address}&format=geojson&addressdetails=1`
+        // Nominatim API from OSM
         `https://nominatim.openstreetmap.org/search?q=${address}&format=json`
       )
 
@@ -132,9 +135,59 @@ function CreateListing() {
     //   // console.log(geolocation, location);
     }
 
+    // Store image in firebase - https://firebase.google.com/docs/storage/web/upload-files
+    const storeImage = async (image) => {
+      return new Promise((resolve, reject) => {   // After complete the promise it can be called resolve - if there is an error it can be called reject
+        const storage = getStorage()
+        const fileName = `${auth.currentUser.uid}-${image.name}-${uuidv4()}`
+
+        const storageRef = ref(storage, 'images/' + fileName) // 'images/' is the path where this image goes to - it creates a folder in firebase -> Storage
+
+        const uploadTask = uploadBytesResumable(storageRef, image)
+
+        uploadTask.on(
+          'state_changed',
+          (snapshot) => {
+            const progress =
+              (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+            console.log('Upload is ' + progress + '% done')
+            switch (snapshot.state) {
+              case 'paused':
+                console.log('Upload is paused')
+                break
+              case 'running':
+                console.log('Upload is running')
+                break
+              default:
+                break
+            }
+          },
+          (error) => {  // If the promise fails / gets an error
+            reject(error)
+          },
+          () => { // Handle successful uploads on complete
+            // For instance, get the download URL: https://firebasestorage.googleapis.com/...
+            getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+              resolve(downloadURL)  // To have an array of download URLs later in Firestore
+            })
+          }
+        )
+      })
+    }
+
+    // To put all downloadURL in imgUrls (array)
+    const imgUrls = await Promise.all(
+      [...images].map((image) => storeImage(image)) // [...images] are all images from the state spread apart - storeImage() is the function to store an image in firebase (see above)
+    ).catch(() => { // For the case an error occured
+      setLoading(false)
+      toast.error('Images not uploaded')
+      return
+    })
+
+    console.log(imgUrls);
+
     setLoading(false)
 
- 
   }
 
   const onMutate = (e) => {
