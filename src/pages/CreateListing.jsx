@@ -6,6 +6,7 @@ import { toast } from 'react-toastify'
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage'  // https://firebase.google.com/docs/storage/web/upload-files
 import { db } from '../firebase.config'
 import { v4 as uuidv4 } from 'uuid'   // To use this package just call uuidv4 as function to create unique ids
+import { addDoc, collection, serverTimestamp } from 'firebase/firestore'
 
 function CreateListing() {
   // eslint-disable-next-line
@@ -184,7 +185,28 @@ function CreateListing() {
       return
     })
 
-    console.log(imgUrls);
+    // console.log(imgUrls);
+
+    // The object which will be submitted to the db
+    const formDataCopy = {  
+      ...formData,  // All other stuff from the form (Name, Address...)
+      imgUrls,
+      geolocation,
+      timestamp: serverTimestamp(),
+    }
+
+    // To add this key additionally the formDataCopy object
+    formDataCopy.location = address   // The address come either from the API (formated) or the form (which was typed in if the wasn't an API involved)
+    // The following keys are not needed to save
+    delete formDataCopy.images    // To delete the image name which comes from the file browser when upload the image
+    delete formDataCopy.address   // To delete the addres which was typed into the form
+    !formDataCopy.offer && delete formDataCopy.discountedPrice  // To delete the key discountedPrice from the formDataCopy object if there is no offer
+
+    // To save the new listing to firestore db
+    const docRef = await addDoc(collection(db, 'listings'), formDataCopy) // To save the new data (formDataCopy) in the listings collection in firestore
+    setLoading(false)
+    toast.success('Listing saved')
+    navigate(`/category/${formDataCopy.type}/${docRef.id}`) // formDataCopy.type is either rent or sale - docRef.id is thenspecific listing -> navigation to the just creted listing
 
     setLoading(false)
 

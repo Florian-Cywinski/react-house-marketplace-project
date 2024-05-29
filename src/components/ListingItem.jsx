@@ -17,7 +17,8 @@ function ListingItem({ listing, id, onDelete }) {
         className='categoryListingLink'
       >
         <img
-          src={listing.imageUrls[0]}  // listing.imgUrls[0] to get the first image of this listing (Advertisement)
+          // src={listing.imageUrls[0]}  // listing.imgUrls[0] to get the first image of this listing (Advertisement)
+          src={listing.imgUrls[0]}  // listing.imgUrls[0] to get the first image of this listing (Advertisement)
           alt={listing.name}
           className='categoryListingImg'
         />
