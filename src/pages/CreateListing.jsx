@@ -10,7 +10,7 @@ import { addDoc, collection, serverTimestamp } from 'firebase/firestore'
 
 function CreateListing() {
   // eslint-disable-next-line
-  const [geolocationEnabled, setGeolocationEnabled] = useState(true)  // If it is later false the user has to type in the lon and lat manually
+  const [geolocationEnabled, setGeolocationEnabled] = useState(false)  // If it is later false the user has to type in the lon and lat manually
   const [loading, setLoading] = useState(false)
   const [formData, setFormData] = useState({
     type: 'rent',
@@ -132,8 +132,6 @@ function CreateListing() {
     } else {  // if geolocationEnabled was set to false (usage without Geocoding API from Google)
       geolocation.lat = latitude  // geolocation.lat -> lat is one key of the geolocation object initialized above -> latidude is the value (it comes from the form)
       geolocation.lng = longitude
-      location = address          // location is the variable created above - address comes from the form
-    //   // console.log(geolocation, location);
     }
 
     // Store image in firebase - https://firebase.google.com/docs/storage/web/upload-files
@@ -196,7 +194,7 @@ function CreateListing() {
     }
 
     // To add this key additionally the formDataCopy object
-    formDataCopy.location = address   // The address come either from the API (formated) or the form (which was typed in if the wasn't an API involved)
+    formDataCopy.location = address   // The address come always from the form (what was typed in by the creator of the new listing) - no matter an API was used or not
     // The following keys are not needed to save
     delete formDataCopy.images    // To delete the image name which comes from the file browser when upload the image
     delete formDataCopy.address   // To delete the addres which was typed into the form
