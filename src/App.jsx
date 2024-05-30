@@ -20,6 +20,7 @@ function App() {
         <Routes>
           <Route path='/' element={<Explore />} />  {/* <Explore /> is the component that is loaded on / */}
           <Route path='/offers' element={<Offers />} /> {/* <Offers /> is the component that is loaded on /offers */}
+          {/* The following is Dynamic Routing and Route Parameter */}
           <Route path='/category/:categoryName' element={<Category />} /> {/* /category/:categoryName because it can be either rent (http://127.0.0.1:3000/category/rent) or sale (http://127.0.0.1:3000/category/sale) */}
           {/* The following route is a private route - Only the logged in user is allowed to go to its profile page */}
           <Route path='/profile' element={<PrivateRoute />}>

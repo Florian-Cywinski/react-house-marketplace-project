@@ -207,9 +207,6 @@ function CreateListing() {
     setLoading(false)
     toast.success('Listing saved')
     navigate(`/category/${formDataCopy.type}/${docRef.id}`) // formDataCopy.type is either rent or sale - docRef.id is thenspecific listing -> navigation to the just creted listing
-
-    setLoading(false)
-
   }
 
   const onMutate = (e) => {
