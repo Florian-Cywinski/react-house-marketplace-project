@@ -12,6 +12,7 @@ import PrivateRoute from './components/PrivateRoute'
 import Category from './pages/Category'
 import CreateListing from './pages/CreateListing'
 import Listing from './pages/Listing'
+import Contact from './pages/Contact'
 
 function App() {
 
@@ -34,6 +35,7 @@ function App() {
           <Route path='/create-listing' element={<CreateListing />} />
           {/* The following is Dynamic Routing and Route Parameters */}
           <Route path='/category/:categoryName/:listingId' element={<Listing />} /> {/* To show a specific listing dependent on the catergory (rent or sale) and its id */}
+          <Route path='/contact/:landlordId' element={<Contact />} />   {/* http://127.0.0.1:3000/contact/JDn6i3...fC4BB9EN2n1 */}
         </Routes>
         <Navbar />
       </Router>

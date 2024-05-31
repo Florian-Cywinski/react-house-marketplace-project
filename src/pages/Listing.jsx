@@ -80,18 +80,9 @@ function Listing() {
           <Link to={`/contact/${listing.userRef}?listingName=${listing.name}`} className='primaryButton'>Contact Landlord</Link>  // ?listingName=${listing.name} is a query string - e.g. /contact/UqI39...k1?listingName=Flowery%20Branch%20Beauty
         )}
 
-
       </div>
 
-
-
-
-
-
-
-
     </main>
- 
   )
 }
 
