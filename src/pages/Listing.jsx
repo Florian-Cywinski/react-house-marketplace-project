@@ -7,12 +7,14 @@ import Spinner from '../components/Spinner'
 import shareIcon from '../assets/svg/shareIcon.svg' // To share the listings link with friends
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet'  // At Brad's the time the following error occured - I had no problems - https://stackoverflow.com/questions/67552020/how-to-fix-error-failed-to-compile-node-modules-react-leaflet-core-esm-pat
 import { toast } from 'react-toastify'
+import { register } from 'swiper/element/bundle'; // import function to register Swiper custom elements
+register(); // register Swiper custom elements
+
 
 function Listing() {
   const [listing, setListing] = useState(null)
   const [loading, setLoading] = useState(true)
   const [shareLinkCopied, setShareLinkCopied] = useState(false)
-
   const navigate = useNavigate()
   const params = useParams()
   const auth = getAuth()
@@ -43,6 +45,16 @@ function Listing() {
 
   return (
     <main>
+      {/* To have a slider / swiper for all images of the listing */}
+      <swiper-container slides-per-view={1} navigation="true" pagination-clickable="true" autoplay-delay="5000" loop="true">  {/* https://www.freecodecamp.org/news/how-to-set-up-swiper-element-in-a-react-application/ -> All Swiper parameters are written in the form of kebab-case attributes on the <swiper-container> Custom Elements */}
+        {listing.imgUrls.map((url, index) => (  // loop through all images (URLs)
+          <swiper-slide key={index}>
+            <div style={{background: `url(${listing.imgUrls[index]}) center no-repeat`, backgroundSize: 'cover', height: '50vh'}} className='swiperSlideDiv'></div> {/* To use the image(s) as background image */}
+          </swiper-slide>
+        ))}
+      </swiper-container>
+
+
       {/* To be able to copy the link to the clipboard */}
       <div className='shareIconDiv'
         onClick={() => {
