@@ -5,13 +5,15 @@ import { getAuth } from 'firebase/auth' // To only show the Contact button at th
 import { db } from '../firebase.config'
 import Spinner from '../components/Spinner'
 import shareIcon from '../assets/svg/shareIcon.svg' // To share the listings link with friends
+import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet'  // At Brad's the time the following error occured - I had no problems - https://stackoverflow.com/questions/67552020/how-to-fix-error-failed-to-compile-node-modules-react-leaflet-core-esm-pat
+import { toast } from 'react-toastify'
 
 function Listing() {
   const [listing, setListing] = useState(null)
   const [loading, setLoading] = useState(true)
   const [shareLinkCopied, setShareLinkCopied] = useState(false)
 
-  // const navigate = useNavigate()
+  const navigate = useNavigate()
   const params = useParams()
   const auth = getAuth()
 
@@ -24,6 +26,11 @@ function Listing() {
         // console.log(docSnap.data());
         setListing(docSnap.data())
         setLoading(false)
+      } else {
+        toast.error('Unable to load the data')
+        setTimeout(() => {  
+          navigate('/')  // redirect
+        }, 2000) 
       }
     }
 
@@ -71,9 +78,26 @@ function Listing() {
           <li>{listing.furnished && 'Furnished'}</li>
         </ul>
 
-        {/* To show the location */}
+        {/* To show the location - Leaflet Map */}
         <p className='listingLocationTitle'>Location</p>    {/* The heading for the map */}
-        {/* To do - Map */}
+        <div className='leafletContainer'>
+          <MapContainer
+              style={{ height: '100%', width: '100%' }}
+              center={[listing.geolocation.lat, listing.geolocation.lng]}
+              zoom={13}
+              scrollWheelZoom={false}
+            > {/* The following is inside the MapContainer */}
+              <TileLayer
+                attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                url='https://{s}.tile.openstreetmap.de/tiles/osmde/{z}/{x}/{y}.png'
+              />
+              <Marker
+                position={[listing.geolocation.lat, listing.geolocation.lng]}
+              >
+                <Popup>{listing.location}</Popup>   {/* Shows the address on hover over the marker */}
+              </Marker>
+            </MapContainer>
+        </div>
 
         {/* To have a Contact button (just if the listing isn't a listing from the logged in user) */}
         {auth.currentUser?.uid !== listing.userRef && (     // if the listing isn't a listing from the logged in user - the ? to avoid getting an error saying it's null
@@ -88,4 +112,3 @@ function Listing() {
 
 export default Listing
 
-// https://stackoverflow.com/questions/67552020/how-to-fix-error-failed-to-compile-node-modules-react-leaflet-core-esm-pat
