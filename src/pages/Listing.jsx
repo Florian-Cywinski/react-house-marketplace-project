@@ -9,6 +9,8 @@ import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet'  // At Br
 import { toast } from 'react-toastify'
 import { register } from 'swiper/element/bundle'; // import function to register Swiper custom elements
 register(); // register Swiper custom elements
+import { Tooltip } from 'react-tooltip'
+// import 'react-tooltip/dist/react-tooltip.css'
 
 
 function Listing() {
@@ -56,7 +58,7 @@ function Listing() {
 
 
       {/* To be able to copy the link to the clipboard */}
-      <div className='shareIconDiv'
+      <div className='shareIconDiv' data-tooltip-id="my-tooltip" data-tooltip-content="Click to copy listing link"
         onClick={() => {
           navigator.clipboard.writeText(window.location.href) // window.location.href is the url - navigator.clipboard.writeText to bring in the link
           // To have a message that the link has been copied (it's true for 2 sec.)
@@ -68,6 +70,7 @@ function Listing() {
         ><img src={shareIcon} alt='' />
       </div>
       {shareLinkCopied && <p className='linkCopied'>Link Copied!</p>}   {/* To show the message that the link was copied for 2 sec. - http://127.0.0.1:3000/category/sale/6F0JPSosb2vsRMrTKEGw */}
+      <Tooltip id="my-tooltip" opacity={1} style={{ backgroundColor: "rgba(0,204,102,1)", color: "#ffffff" , zIndex: 10}} />  {/* https://react-tooltip.com/docs/examples/styling */}
 
       {/* To display the Listing Details */}
       <div className='listingDetails'>
