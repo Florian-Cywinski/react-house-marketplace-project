@@ -1,11 +1,12 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { getAuth, updateProfile } from "firebase/auth"
 import { useNavigate, Link } from 'react-router-dom'
-import { updateDoc, doc } from 'firebase/firestore'
+import { updateDoc, doc, collection, getDocs, query, where, orderBy, deleteDoc } from 'firebase/firestore'
 import { db } from '../firebase.config'
 import { toast } from 'react-toastify'
 import arrowRight from '../assets/svg/keyboardArrowRightIcon.svg'
 import homeIcon from '../assets/svg/homeIcon.svg'
+import ListingItem from '../components/ListingItem'
 
 function Profile() {
   // const [user, setUser] = useState(null)
@@ -16,7 +17,37 @@ function Profile() {
   })
   const navigate = useNavigate()
   const { name, email } = formData    // To destructure name and email from formData
-  const [changeDetails, setChangeDetails] = useState(false)   // To set an in update state
+  const [changeDetails, setChangeDetails] = useState(false)   // To set an update state
+  const [listings, setListings] = useState(null)  // To save all (logged in) users listings  
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchUserListings = async () => {
+      const listingsRef = collection(db, 'listings')  // To have all listings
+
+      const q = query(
+        listingsRef,
+        where('userRef', '==', auth.currentUser.uid), // where the user reference of the listing fits with the logged in user
+        orderBy('timestamp', 'desc')
+      )
+
+      const querySnap = await getDocs(q)  // To get a snapshot of the query q (all listings from the logged in user)
+
+      let listings = []
+
+      querySnap.forEach((doc) => {
+        return listings.push({
+          id: doc.id,
+          data: doc.data(),
+        })
+      })
+
+      setListings(listings)
+      setLoading(false)
+    }
+
+    fetchUserListings()
+  }, [auth.currentUser.uid])
 
   const onLogout = () => {
     auth.signOut()
@@ -48,6 +79,15 @@ function Profile() {
       ...prevState,
       [e.target.id]: e.target.value,  // e.target.id could be name or email (form input tags (name, email))
     }))
+  }
+
+  const onDelete = async (listingId) => {     // listingId is listing.id
+    if (window.confirm('Are you sure you want to delete?')) {
+      await deleteDoc(doc(db, 'listings', listingId))   // To delete the listing from firebase
+      const updatedListings = listings.filter((listing) => listing.id !== listingId)  // To delete the listing from the UI
+      setListings(updatedListings)
+      toast.success('Successfully deleted listing')
+    }
   }
 
   return (
@@ -90,6 +130,23 @@ function Profile() {
           <p>Sell or rent your home</p>
           <img src={arrowRight} alt='arrow right' />
         </Link>
+
+        {!loading && listings?.length > 0 && (
+          <>
+            <p className='listingText'>Your Listings</p>
+            <ul className='listingsList'>
+              {listings.map((listing) => (
+                <ListingItem        // ListingItem.jsx -> function ListingItem({ listing, id, onDelete }) {
+                  key={listing.id}
+                  listing={listing.data}
+                  id={listing.id}
+                  onDelete={() => onDelete(listing.id)}
+                  onEdit={() => onEdit(listing.id)}
+                />
+              ))}
+            </ul>
+          </>
+        )}
       </main>
     </div>
   )
