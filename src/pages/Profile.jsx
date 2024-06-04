@@ -7,6 +7,7 @@ import { toast } from 'react-toastify'
 import arrowRight from '../assets/svg/keyboardArrowRightIcon.svg'
 import homeIcon from '../assets/svg/homeIcon.svg'
 import ListingItem from '../components/ListingItem'
+import { getStorage, ref, deleteObject } from "firebase/storage"; // To delte images from firestore - It's not part of the course
 
 function Profile() {
   // const [user, setUser] = useState(null)
@@ -81,14 +82,34 @@ function Profile() {
     }))
   }
 
+
+
   const onDelete = async (listingId) => {     // listingId is listing.id
     if (window.confirm('Are you sure you want to delete?')) {
       await deleteDoc(doc(db, 'listings', listingId))   // To delete the listing from firebase
       const updatedListings = listings.filter((listing) => listing.id !== listingId)  // To delete the listing from the UI
       setListings(updatedListings)
+
+      // To delte images from firestore - It's not part of the course
+      // https://firebase.google.com/docs/storage/web/delete-files
+      // https://firebase.google.com/docs/storage/web/handle-errors
+      // const storage = getStorage();
+      // // Create a reference to the file to delete
+      // const desertRef = ref(storage, 'images/desert.jpg');
+      // // Delete the file
+      // deleteObject(desertRef).then(() => {
+      //   // File deleted successfully
+      // }).catch((error) => {
+      //   // Uh-oh, an error occurred!
+      // });
+
       toast.success('Successfully deleted listing')
     }
   }
+
+  
+
+
 
   return (
     <div className='profile'>
