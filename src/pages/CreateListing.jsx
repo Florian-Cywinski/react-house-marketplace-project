@@ -10,7 +10,7 @@ import { addDoc, collection, serverTimestamp } from 'firebase/firestore'
 
 function CreateListing() {
   // eslint-disable-next-line
-  const [geolocationEnabled, setGeolocationEnabled] = useState(false)  // If it is later false the user has to type in the lon and lat manually
+  const [geolocationEnabled, setGeolocationEnabled] = useState(false)  // If it is false the user has to type in the lon and lat manually
   const [loading, setLoading] = useState(false)
   const [formData, setFormData] = useState({
     type: 'rent',
@@ -182,8 +182,6 @@ function CreateListing() {
       toast.error('Images not uploaded')
       return
     })
-
-    // console.log(imgUrls);
 
     // The object which will be submitted to the db
     const formDataCopy = {  

@@ -44,7 +44,7 @@ function Slider() {
     return <Spinner />
   }
 
-  if (listings.length === 0) {
+  if (listings.length === 0) {  // To don't have an empty space if there is no listing
     return <></>
   }
 
