@@ -13,16 +13,19 @@ import { Tooltip } from 'react-tooltip'
 
 // The following is to import everything to make leaflet work (including the icon in production (Netlify))
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet'  // At Brad's the time the following error occured - I had no problems - https://stackoverflow.com/questions/67552020/how-to-fix-error-failed-to-compile-node-modules-react-leaflet-core-esm-pat
-import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
+import './style.css';
 
-delete L.Icon.Default.prototype._getIconUrl;
+import icon from 'leaflet/dist/images/marker-icon.png';
+import iconShadow from 'leaflet/dist/images/marker-shadow.png';
 
-L.Icon.Default.mergeOptions({
-    iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
-    iconUrl: require('leaflet/dist/images/marker-icon.png'),
-    shadowUrl: require('leaflet/dist/images/marker-shadow.png')
+let DefaultIcon = L.icon({
+    iconUrl: icon,
+    shadowUrl: iconShadow
 });
+
+L.Marker.prototype.options.icon = DefaultIcon;
 /////////////////////////////////////////////////////////////////////////
 
 
