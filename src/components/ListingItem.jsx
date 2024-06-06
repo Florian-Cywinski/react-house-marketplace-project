@@ -9,7 +9,7 @@ import EditIcon from '../assets/svg/editIcon.svg?react'
 import bedIcon from '../assets/svg/bedIcon.svg'
 import bathtubIcon from '../assets/svg/bathtubIcon.svg'
 
-function ListingItem({ listing, id, onDelete }) {
+function ListingItem({ listing, id, onEdit, onDelete }) {   // The parameters (listing (listing.data), id(listing.id)) and functions (onEdit, onDelete) are passed when using the component
   return (
     <li className='categoryListing'>
       <Link
@@ -50,13 +50,15 @@ function ListingItem({ listing, id, onDelete }) {
         </div>
       </Link>
 
-      {onDelete && (  // onDelete is a function that allows the user to delete their own properties, if listed  - if the user is in delete mode the delete icon appears
+      {onDelete && (  // To show the DeleteIcon if the onDelete function was passed in when using this ListingItem.jsx component (on the Profile.jsx page)
         <DeleteIcon
           className='removeIcon'
           fill='rgb(231, 76,60)'
-          onClick={() => onDelete(listing.id, listing.name)}  // isting.id is the document id in Firestore
+          onClick={() => onDelete(listing.id, listing.name)}  // To call the onDelete function in Profile.jsx - listing.id is the document id in Firestore
         />
       )}
+
+      {onEdit && <EditIcon className='editIcon' onClick={() => onEdit(id)} />}  {/* onEdit() is a function (passed in as prop) */}
 
     </li>
   )
