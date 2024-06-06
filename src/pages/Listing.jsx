@@ -15,7 +15,6 @@ import { Tooltip } from 'react-tooltip'
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet'  // At Brad's the time the following error occured - I had no problems - https://stackoverflow.com/questions/67552020/how-to-fix-error-failed-to-compile-node-modules-react-leaflet-core-esm-pat
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import './style.css';
 
 import icon from 'leaflet/dist/images/marker-icon.png';
 import iconShadow from 'leaflet/dist/images/marker-shadow.png';
