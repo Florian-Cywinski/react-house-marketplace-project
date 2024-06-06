@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'  // To get the param rent or sale (rent (http://127.0.0.1:3000/category/rent) or sale (http://127.0.0.1:3000/category/sale))
 import {
   collection, // Instead of getting a single document
   getDocs,  // To get all documents
@@ -21,8 +20,6 @@ function Offers() {
   const [numberOfListingsToBeLoaded, setNumberOfListingsToBeLoaded] = useState(2)  // To define the number of listings to be loaded - To show the Load More button or not
   const [numberOfListingsExisting, setNumberOfListingsExisting] = useState(0)  // The number of listings that exists - To show the Load More button or not
   const [numberOfListingsAlreadyLoaded, setNumberOfListingsAlreadyLoaded] = useState(numberOfListingsToBeLoaded)  // The number of listings that exists - To show the Load More button or not
-
-  const params = useParams()  
 
   useEffect(() => { // To fetch the first 10 listings
     const fetchListings = async () => { // To create this function is needed since it't not possible to use async directly on useEffect
