@@ -55,7 +55,7 @@ function Slider() {
         <swiper-container slides-per-view={1} navigation="true" pagination-clickable="true" autoplay-delay="5000" loop="true" cursor="pointer">  {/* https://www.freecodecamp.org/news/how-to-set-up-swiper-element-in-a-react-application/ -> All Swiper parameters are written in the form of kebab-case attributes on the <swiper-container> Custom Elements */}
           {listings.map(({ data, id }) => (  // loop through all listings
             <swiper-slide key={id} onClick={() => navigate(`/category/${data.type}/${id}`)}>
-              <div style={{background: `url(${data.imgUrls[0]}) center no-repeat`, backgroundSize: 'cover', height: '50vh', cursor: '-webkit-grab', cursor: 'grab'}} className='swiperSlideDiv'>
+              <div style={{background: `url(${data.imgUrls[0]}) center no-repeat`, backgroundSize: 'cover', height: '50vh', cursor: 'grab'}} className='swiperSlideDiv'>
                 <p className='swiperSlideText'>{data.name}</p>
                 <p className='swiperSlidePrice'>
                   {/* ${data.discountedPrice ?? data.regularPrice}  Displays the discounted price, if available - If no discounted price exists and the value is null, the code to the right of the ?? is executed and the regular price is displayed. */}

@@ -7,7 +7,7 @@ import { toast } from 'react-toastify'
 import arrowRight from '../assets/svg/keyboardArrowRightIcon.svg'
 import homeIcon from '../assets/svg/homeIcon.svg'
 import ListingItem from '../components/ListingItem'
-import { getStorage, ref, deleteObject } from "firebase/storage"; // To delte images from firestore - It's not part of the course
+// import { getStorage, ref, deleteObject } from "firebase/storage"; // To delte images from firestore - It's not part of the course
 
 function Profile() {
   // const [user, setUser] = useState(null)
