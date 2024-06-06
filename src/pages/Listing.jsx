@@ -5,12 +5,25 @@ import { getAuth } from 'firebase/auth' // To only show the Contact button at th
 import { db } from '../firebase.config'
 import Spinner from '../components/Spinner'
 import shareIcon from '../assets/svg/shareIcon.svg' // To share the listings link with friends
-import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet'  // At Brad's the time the following error occured - I had no problems - https://stackoverflow.com/questions/67552020/how-to-fix-error-failed-to-compile-node-modules-react-leaflet-core-esm-pat
 import { toast } from 'react-toastify'
 import { register } from 'swiper/element/bundle'; // import function to register Swiper custom elements
 register(); // register Swiper custom elements
 import { Tooltip } from 'react-tooltip'
 // import 'react-tooltip/dist/react-tooltip.css'
+
+// The following is to import everything to make leaflet work (including the icon in production (Netlify))
+import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet'  // At Brad's the time the following error occured - I had no problems - https://stackoverflow.com/questions/67552020/how-to-fix-error-failed-to-compile-node-modules-react-leaflet-core-esm-pat
+import 'leaflet/dist/leaflet.css';
+import L from 'leaflet';
+
+delete L.Icon.Default.prototype._getIconUrl;
+
+L.Icon.Default.mergeOptions({
+    iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
+    iconUrl: require('leaflet/dist/images/marker-icon.png'),
+    shadowUrl: require('leaflet/dist/images/marker-shadow.png')
+});
+/////////////////////////////////////////////////////////////////////////
 
 
 function Listing() {
