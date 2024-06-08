@@ -1,8 +1,6 @@
 [[redirects]]
   from = "/category/:categoryName"
-  to = "/category/:categoryName"
-
-
-
-
+  [to]  # subtable
+   from = "/"
+   to = "/category/:categoryName"
 
