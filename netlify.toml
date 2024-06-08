@@ -1,6 +1,6 @@
 [[redirects]]
   from = "/category/:categoryName"
-  to = "/"
+  to = "/category/:categoryName"
 
 
 
