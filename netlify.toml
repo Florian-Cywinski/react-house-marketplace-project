@@ -1,3 +1,4 @@
 [[redirects]]
-  from = "/category/:categoryName/*"
-  to = "/"
+  from = "/*"
+  to = "/index.html"
+  status = 200
